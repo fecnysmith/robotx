@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Bejelentkezés - Robot-X control panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta content="Robot-X" name="description"/>
+    <meta content="Farkas Ferenc <wolferi93@gmail.com>" name="author"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link href="/static/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/assets/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="/static/assets/css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="wrapper-page">
+    <div class="panel panel-color panel-primary panel-pages">
+        <div class="panel-body"><h3 class="text-center m-t-0 m-b-15"><a href="index.html" class="logo logo-admin"><span>Robot-</span>X</a>
+            </h3>
+			<!-- show any messages that come back with authentication -->
+            <% if (message.length > 0) { %>
+                <div class="alert alert-danger"><%= message %></div>
+            <% } %>
+            <form class="form-horizontal m-t-20" method="post">
+    <div class="form-group">
+        <div class="col-xs-12"><input class="form-control" type="text" name="username" required=""
+                                      placeholder="Felhasználói név">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-12"><input class="form-control" type="password" name="password" required=""
+                                      placeholder="Jelszó"></div>
+    </div>
+    <div class="form-group text-center m-t-40">
+        <div class="col-xs-12">
+            <button class="btn btn-primary btn-block btn-lg waves-effect waves-light" name="login"
+                    type="submit">Bejelentkezés
+            </button>
+        </div>
+    </div>
+</form>        </div>
+
+    </div>
+</div>
+<script src="/static/assets/js/jquery.min.js"></script>
+<script src="/static/assets/js/bootstrap.min.js"></script>
+<script src="/static/assets/js/modernizr.min.js"></script>
+</body>
+</html>

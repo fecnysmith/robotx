@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Robot-X control panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta content="Robot-X" name="description"/>
+    <meta content="Farkas Ferenc <wolferi93@gmail.com>" name="author"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="shortcut icon" href="/static/assets/images/favicon.ico">
+    <link href="/static/assets/plugins/bootstrap-sweetalert/sweet-alert.css" rel="stylesheet" type="text/css">
+    <link href="/static/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/assets/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="/static/assets/css/style.css" rel="stylesheet" type="text/css">
+
+    <script src="/static/assets/js/jquery.min.js"></script>
+    <script src="/static/assets/js/bootstrap.min.js"></script>
+    <script src="/static/assets/plugins/bootstrap-sweetalert/sweet-alert.min.js"></script>
+    <script src="/static/assets/pages/sweet-alert.init.js"></script>
+</head>
+<body class="fixed-left">
+<div id="wrapper">
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="text-center"><a href="/" class="logo"><span>Robot-</span>X</a> <a
+                        href="/"
+                        class="logo-sm"><span>RX</span></a>
+            </div>
+        </div>
+        <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <div class="">
+                    <div class="pull-left">
+                        <button type="button" class="button-menu-mobile open-left waves-effect waves-light"><i
+                                    class="ion-navicon"></i></button>
+                        <span class="clearfix"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="left side-menu">
+        <div class="sidebar-inner slimscrollleft">
+            <div id="sidebar-menu">
+                <ul>
+                    <li><a href="/dashboard" class="waves-effect"><i class="mdi mdi-home"></i><span> Főoldal </span></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="content-page">
+        <div class="content">
+            <div class="">
+                <div class="page-header-title">
+                    <h4 class="page-title">
+                        Statisztikák
+                    </h4>
+                </div>
+            </div>
+            <div class="page-content-wrapper ">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-primary">
+                                <div class="panel-body" style="min-height:430px;text-align: center;">
+                                    <div id="chart">Az eszközök adatainak betöltése, kérem várjon...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/static/assets/js/jquery.canvasjs.min.js"></script>
+
+        <!--socket connection-->
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            function addChart(datas) {
+                var datasArray = [];
+
+                for (var index in datas) {
+                    datasArray.push({
+                        type: "line",
+                        showInLegend: true,
+                        lineThickness: 1,
+                        name: index,
+                        dataPoints: datas[index]
+                    });
+                }
+
+                var options = {
+                    animationEnabled: true,
+                    zoomEnabled: true,
+                    axisX: {
+                        gridColor: "Silver",
+                        tickColor: "silver",
+                        valueFormatString: "YYYY-MM-DD HH:mm"
+                    },
+                    toolTip:{
+                        contentFormatter: function ( e ) {
+                            var d = new Date(e.entries[0].dataPoint.x);
+
+                            var datestring = d.getFullYear()  + "-" + (d.getMonth()+1) + "-" + d.getDate() + " " +
+                                    d.getHours() + ":" + d.getMinutes();
+                            return datestring + ": <strong>" +  e.entries[0].dataPoint.y+"</strong>";
+                        }
+                    },
+                    data: datasArray,
+                    legend:{
+                        cursor:"pointer",
+                        itemclick:function(e){
+                            if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                                e.dataSeries.visible = false;
+                            }
+                            else{
+                                e.dataSeries.visible = true;
+                            }
+                            e.chart.render();
+                        }
+                    }
+                };
+
+                var chart = $("#chart").CanvasJSChart(options);
+            }
+
+
+            var socket = io().connect();
+            function renderDeviceDatas() {
+                var deviceDatas = new Array();
+
+                socket.emit('get_device_datas', function (ret) {
+                    for (var index in ret) {
+                        var row = ret[index];
+
+                        // ha nem létezik az eszköz indexe, létrehozzuk azt
+                        if (typeof deviceDatas[row.device_type] == 'undefined') {
+                            deviceDatas[row.device_type] = new Array();
+                        }
+
+                        deviceDatas[row.device_type].push({
+                            x: new Date(row.timestamp),
+                            y: row.value,
+                        });
+                    }
+
+                    addChart(deviceDatas);
+
+                });
+            }
+
+            // init socket with emit
+            $(document).ready(function () {
+                renderDeviceDatas();
+            });
+        </script>
+        <script>
+        </script>
+        <footer class="footer"> © 2017 Farkas Ferenc / rT-System - All Rights Reserved.</footer>
+    </div>
+</div>
+
+<script src="/static/assets/js/modernizr.min.js"></script>
+<script src="/static/assets/js/detect.js"></script>
+<script src="/static/assets/js/fastclick.js"></script>
+<script src="/static/assets/js/jquery.slimscroll.js"></script>
+<script src="/static/assets/js/jquery.blockUI.js"></script>
+<script src="/static/assets/js/waves.js"></script>
+<script src="/static/assets/js/wow.min.js"></script>
+<script src="/static/assets/js/jquery.nicescroll.js"></script>
+<script src="/static/assets/js/jquery.scrollTo.min.js"></script>
+<script src="/static/assets/js/app.js"></script>
+</body>
+</html>
