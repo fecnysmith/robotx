@@ -128,7 +128,7 @@
 
             var socket = io().connect();
             function renderDeviceDatas() {
-                var deviceDatas = new Array();
+                var deviceDatas = [];
 
                 socket.emit('get_device_datas', function (ret) {
                     for (var index in ret) {
@@ -136,7 +136,7 @@
 
                         // ha nem létezik az eszköz indexe, létrehozzuk azt
                         if (typeof deviceDatas[row.device_type] == 'undefined') {
-                            deviceDatas[row.device_type] = new Array();
+                            deviceDatas[row.device_type] = [];
                         }
 
                         deviceDatas[row.device_type].push({
